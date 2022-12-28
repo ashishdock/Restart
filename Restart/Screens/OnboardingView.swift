@@ -20,6 +20,8 @@ struct OnboardingView: View {
     @State private var indicatorOpacity: Double = 1.0
     @State private var textTitle: String = "Share."
     
+    let hapticFeedback = UINotificationFeedbackGenerator()
+    
     //MARK: - BODY
     var body: some View {
         ZStack{
@@ -150,9 +152,12 @@ struct OnboardingView: View {
                                 .onEnded{_ in
                                     withAnimation(Animation.easeOut(duration: 0.4)){
                                         if buttonOffset > buttonWidth * 0.6 {
+                                            hapticFeedback.notificationOccurred(UINotificationFeedbackGenerator.FeedbackType.success)
+                                            playSound(sound: "chimeup", type: "mp3")
                                             buttonOffset = buttonWidth - 80
                                             isOnboardingViewActive = false
                                         } else {
+                                            hapticFeedback.notificationOccurred(UINotificationFeedbackGenerator.FeedbackType.warning)
                                             buttonOffset = 0
                                         }
                                     }
@@ -174,6 +179,7 @@ struct OnboardingView: View {
         .onAppear {
             isAnimating = true
         }
+        .preferredColorScheme(ColorScheme.dark) // app will not be affected by change in modes and will always be in dark mode 
     }
 }
 
